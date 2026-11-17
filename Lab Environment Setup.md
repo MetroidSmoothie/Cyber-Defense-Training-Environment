@@ -24,10 +24,10 @@ Deploy a four-VM network security lab using **OPNsense 26.7** to route and filte
 
 ## 1. Prerequisites
 
-- Oracle VirtualBox installed, with sufficient CPU, disk space, and RAM to run four VMs.
+- Oracle VirtualBox installed, with sufficient CPU, disk space, and RAM to run four VMs. I would recommend 16GB of RAM as a baseline/minimum
+  Note: 4GB of RAM is allocated to the VMs during installation. It can be reduced after installation depending on users host system specs
 - Official OPNsense 26.7 installation image (AMD64 DVD image, extracted from its compressed download).
 - Installation media or virtual disks for Kali Linux, Ubuntu Server, and Debian.
-- Approximately 12 GB of available host RAM is a useful starting point; actual requirements depend on the guests and running services.
 
 Create the following VirtualBox machines:
 
@@ -38,7 +38,7 @@ Create the following VirtualBox machines:
 | `VM_Ubuntu` | Ubuntu Server 26.04.1 LTS | Protected application/test host |
 | `VM_Debian` | Debian 13.7 | Protected service/logging host |
 
-**Distribution:** VM images are not included in this repository. Build the environment using appropriately licensed installation media and the configuration below.
+**Distribution:** VM images are not included in this repository. Preconfigured .ovas can be provided upon request. Otherwise, build the environment using appropriately licensed installation media and the configuration below.
 
 ## 2. Network plan
 
@@ -74,14 +74,14 @@ Disable all unused adapters. Use **Promiscuous Mode: Deny** and ensure **Cable C
 
 1. Create `VM_OPNsense` in VirtualBox using **BSD / FreeBSD (64-bit)**.
 2. Allocate **4 GB RAM**, **2 virtual CPUs**, and a **20 GB dynamically allocated virtual disk**. Leave EFI disabled.
-3. Attach the extracted OPNsense installation ISO and start the VM.
-4. At the installer environment, sign in with the installation account (`installer` / `opnsense`) and perform the installation to the virtual disk. The documented installation used **UFS**.
-5. Set a unique root password, reboot, and remove the ISO from the virtual optical drive.
-6. Assign interfaces at the console using **1) Assign interfaces**:
+4. Attach the extracted OPNsense installation ISO and start the VM.
+5. At the installer environment, sign in with the installation account (`installer` / `opnsense`) and perform the installation to the virtual disk. The documented installation used **UFS**.
+6. Set a unique root password, reboot, and remove the ISO from the virtual optical drive.
+7. Assign interfaces at the console using **1) Assign interfaces**:
    - WAN: `em0`
    - LAN: `em1`
    - OPT1: none
-7. Use **2) Set interface IP address** to configure LAN as `172.16.77.1/24`, with no upstream gateway, and enable DHCP for the LAN. Keep HTTPS management enabled.
+8. Use **2) Set interface IP address** to configure LAN as `172.16.77.1/24`, with no upstream gateway, and enable DHCP for the LAN. Keep HTTPS management enabled.
 
 **Initial management access:** The web interface is reached from a host temporarily connected to the LAN at `https://172.16.77.1`. A browser warning for the default self-signed certificate is expected. Confirm the destination before proceeding.
 
