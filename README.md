@@ -11,7 +11,7 @@ A hands-on cybersecurity lab designed to provide aspiring and entry-level profes
 
 ## Network Topology
 
-![Network topology showing Kali on Lab-External, OPNsense routing between the two segments, and Ubuntu and Debian on Lab-Internal. The entire VirtualBox lab is isolated from external networks.](images/OPNsense Cybersecurity Lab Topology.png)
+![Network topology showing Kali on Lab-External, OPNsense routing between the two segments, and Ubuntu and Debian on Lab-Internal. The entire VirtualBox lab is isolated from external networks.](images/lab-setup/opnsense-cybersecurity-lab-topology.png)
 
 *The entire lab is isolated from internet and physical network connectivity. **Lab-External** and **Lab-Internal** are separate network segments connected through OPNsense; they are not independent internet-connected networks.*
 
