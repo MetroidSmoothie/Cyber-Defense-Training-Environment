@@ -6,26 +6,9 @@ Deploy a four-VM network security lab using **OPNsense 26.7** to route and filte
 
 **Security warning:** The completed lab uses **VirtualBox Internal Network** adapters only, with no NAT, bridged, or physical-network connectivity. Keep the lab isolated, use unique credentials, and never expose the OPNsense management interface to an untrusted network. Isolation reduces risk but does not eliminate it.
 
-
-## Table of Contents
-
-1. [Prerequisites](#1-prerequisites)
-2. [Network Plan](#2-network-plan)
-3. [Install and Configure OPNsense](#3-install-and-configure-opnsense)
-4. [Configure LAN DHCP and Reservations](#4-configure-lan-dhcp-and-reservations)
-5. [Configure Ubuntu](#5-configure-ubuntu)
-6. [Configure Debian](#6-configure-debian)
-7. [Configure Kali's Persistent External Address](#7-configure-kalis-persistent-external-address)
-8. [Configure a Narrow OPNsense WAN ICMP Rule](#8-configure-a-narrow-opnsense-wan-icmp-rule)
-9. [Validate Connectivity and Firewall Enforcement](#9-validate-connectivity-and-firewall-enforcement)
-10. [Baseline Completion Checklist](#10-baseline-completion-checklist)
-11. [Before Starting the Security Exercises](#11-before-starting-the-security-exercises)
-
-
 ## 1. Prerequisites
 
-- Oracle VirtualBox installed, with sufficient CPU, disk space, and RAM to run four VMs. I would recommend 16GB of RAM as a baseline/minimum
-  Note: 4GB of RAM is allocated to the VMs during installation. It can be reduced after installation depending on users host system specs
+- Oracle VirtualBox installed, with sufficient CPU, disk space, and RAM to run four VMs. I would recommend 16GB of RAM on the host machine as a minimum/baseline, but VM can be adjusted accordingly based on host machine specs. 
 - Official OPNsense 26.7 installation image (AMD64 DVD image, extracted from its compressed download).
 - Installation media or virtual disks for Kali Linux, Ubuntu Server, and Debian.
 
@@ -38,7 +21,22 @@ Create the following VirtualBox machines:
 | `VM_Ubuntu` | Ubuntu Server 26.04.1 LTS | Protected application/test host |
 | `VM_Debian` | Debian 13.7 | Protected service/logging host |
 
-**Distribution:** VM images are not included in this repository. Preconfigured .ovas can be provided upon request. Otherwise, build the environment using appropriately licensed installation media and the configuration below.
+**Distribution:** VM images are not included in this repository. Build the environment using appropriately licensed installation media and the configuration below.
+
+### Initial VM Preparation
+
+Before configuring the isolated VirtualBox networks, install any required tools and apply operating system updates.
+
+For Debian, run:
+
+```bash
+sudo apt update
+sudo apt install -y nmap tcpdump curl wget netcat-openbsd openssh-client
+```
+
+These packages provide networking, traffic analysis, and remote-access utilities used throughout the lab. APT will skip packages that are already up to date.
+
+**Note:** Temporarily use a VirtualBox NAT adapter to provide internet access during installation. Once updates and package installations are complete, shut down the VM and change its adapter to **Internal Network → `PFSense Network`**. Do not leave NAT or bridged adapters enabled in the final lab.
 
 ## 2. Network plan
 
@@ -74,14 +72,14 @@ Disable all unused adapters. Use **Promiscuous Mode: Deny** and ensure **Cable C
 
 1. Create `VM_OPNsense` in VirtualBox using **BSD / FreeBSD (64-bit)**.
 2. Allocate **4 GB RAM**, **2 virtual CPUs**, and a **20 GB dynamically allocated virtual disk**. Leave EFI disabled.
-4. Attach the extracted OPNsense installation ISO and start the VM.
-5. At the installer environment, sign in with the installation account (`installer` / `opnsense`) and perform the installation to the virtual disk. The documented installation used **UFS**.
-6. Set a unique root password, reboot, and remove the ISO from the virtual optical drive.
-7. Assign interfaces at the console using **1) Assign interfaces**:
+3. Attach the extracted OPNsense installation ISO and start the VM.
+4. At the installer environment, sign in with the installation account (`installer` / `opnsense`) and perform the installation to the virtual disk. The documented installation used **UFS**.
+5. Set a unique root password, reboot, and remove the ISO from the virtual optical drive.
+6. Assign interfaces at the console using **1) Assign interfaces**:
    - WAN: `em0`
    - LAN: `em1`
    - OPT1: none
-8. Use **2) Set interface IP address** to configure LAN as `172.16.77.1/24`, with no upstream gateway, and enable DHCP for the LAN. Keep HTTPS management enabled.
+7. Use **2) Set interface IP address** to configure LAN as `172.16.77.1/24`, with no upstream gateway, and enable DHCP for the LAN. Keep HTTPS management enabled.
 
 **Initial management access:** The web interface is reached from a host temporarily connected to the LAN at `https://172.16.77.1`. A browser warning for the default self-signed certificate is expected. Confirm the destination before proceeding.
 
@@ -226,7 +224,14 @@ Expected: `172.16.77.10/24`, a route to `192.168.50.0/24` via `172.16.77.1`, and
 ## 6. Configure Debian
 
 1. Start `VM_Debian` with its only enabled adapter on `PFSense Network`.
-2. Verify the OS and tools.
+2. Verify the operating system and installed tools:
+
+   ```bash
+   cat /etc/os-release
+   command -v nmap tcpdump curl wget nc ssh
+   ```
+
+   All six tools should return executable paths. If any are missing, revisit the package installation instructions in [Section 1 — Prerequisites](#1-prerequisites).
 3. Configure DHCP and a persistent route using `/etc/network/interfaces` (the documented Debian host uses **ifupdown**):
 
 ```ini
