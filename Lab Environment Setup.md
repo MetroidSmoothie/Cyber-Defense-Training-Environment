@@ -6,6 +6,20 @@ Deploy a four-VM network security lab using **OPNsense 26.7** to route and filte
 
 **Security warning:** The completed lab uses **VirtualBox Internal Network** adapters only, with no NAT, bridged, or physical-network connectivity. Keep the lab isolated, use unique credentials, and never expose the OPNsense management interface to an untrusted network. Isolation reduces risk but does not eliminate it.
 
+## Table of Contents
+
+1. [Prerequisites](#1-prerequisites)
+2. [Network Plan](#2-network-plan)
+3. [Install and Configure OPNsense](#3-install-and-configure-opnsense)
+4. [Configure LAN DHCP and Reservations](#4-configure-lan-dhcp-and-reservations)
+5. [Configure Ubuntu](#5-configure-ubuntu)
+6. [Configure Debian](#6-configure-debian)
+7. [Configure Kali's Persistent External Address](#7-configure-kalis-persistent-external-address)
+8. [Configure a Narrow OPNsense WAN ICMP Rule](#8-configure-a-narrow-opnsense-wan-icmp-rule)
+9. [Validate Connectivity and Firewall Enforcement](#9-validate-connectivity-and-firewall-enforcement)
+10. [Baseline Completion Checklist](#10-baseline-completion-checklist)
+11. [Before Starting the Security Exercises](#11-before-starting-the-security-exercises)
+
 ## 1. Prerequisites
 
 - Oracle VirtualBox installed, with sufficient CPU, disk space, and RAM to run four VMs. I would recommend 16GB of RAM on the host machine as a minimum/baseline, but VM can be adjusted accordingly based on host machine specs. 
@@ -25,18 +39,23 @@ Create the following VirtualBox machines:
 
 ### Initial VM Preparation
 
-Before configuring the isolated VirtualBox networks, install any required tools and apply operating system updates.
+Before configuring the isolated VirtualBox networks, apply operating system updates and install the tools needed for the Linux guests. Temporarily attach **one NAT adapter** to each guest while downloading packages. Shut down each VM afterward and change that adapter to the correct **Internal Network** specified in [Section 2 — Network Plan](#2-network-plan). Do not leave NAT or bridged adapters enabled in the final lab.
 
-For Debian, run:
+**Debian:**
 
 ```bash
 sudo apt update
 sudo apt install -y nmap tcpdump curl wget netcat-openbsd openssh-client
 ```
 
-These packages provide networking, traffic analysis, and remote-access utilities used throughout the lab. APT will skip packages that are already up to date.
+**Ubuntu:**
 
-**Note:** Temporarily use a VirtualBox NAT adapter to provide internet access during installation. Once updates and package installations are complete, shut down the VM and change its adapter to **Internal Network → `PFSense Network`**. Do not leave NAT or bridged adapters enabled in the final lab.
+```bash
+sudo apt update
+sudo apt install -y apache2 openssh-server curl wget nmap tcpdump dnsutils netcat-openbsd
+```
+
+APT will skip reinstalling packages that are already up to date. For both Ubuntu and Debian, restore **Internal Network → `PFSense Network`** before continuing with the guest configuration sections. Kali's final adapter uses **Internal Network → `Lab-External`**. OPNsense's temporary WAN connection and its return to `Lab-External` are documented separately in Sections 3.3–3.4.
 
 ## 2. Network plan
 
@@ -83,7 +102,20 @@ Disable all unused adapters. Use **Promiscuous Mode: Deny** and ensure **Cable C
 
 **Initial management access:** The web interface is reached from a host temporarily connected to the LAN at `https://172.16.77.1`. A browser warning for the default self-signed certificate is expected. Confirm the destination before proceeding.
 
-**Important:** For the published final topology, Kali has **only its external adapter**. Do not leave a second Kali LAN adapter enabled; that would bypass WAN firewall segmentation. If a temporary LAN-connected adapter is used for initial administration, remove it before baseline validation.
+To administer OPNsense from Kali during setup:
+
+1. Power off `VM_Kali` and temporarily enable **VirtualBox Adapter 2 → Internal Network → `PFSense Network`**. Keep Adapter 1 on `Lab-External`.
+2. Start Kali. Identify its new LAN interface with `ip -br addr` (in the documented VM, this was `eth1`). If it does not receive a LAN DHCP address, verify that OPNsense LAN DHCP is enabled before continuing.
+3. If Kali's existing route to the protected subnet still points through OPNsense WAN, add a temporary **host route to the management IP only** using the actual LAN interface:
+
+   ```bash
+   sudo ip route replace 172.16.77.1/32 dev eth1
+   ```
+
+4. Open `https://172.16.77.1` in Kali's browser to complete setup or inspect firewall logs.
+5. **After administration, shut down Kali and disable Adapter 2.** Start Kali again and verify that only its `Lab-External` adapter remains active before testing segmentation.
+
+**Important:** A temporary LAN-connected Kali adapter bypasses the intended WAN firewall boundary. Never leave it enabled during baseline or exercise isolation tests. The temporary `/32` host route is not part of Kali's permanent configuration.
 
 ### 3.2 Complete the initial web configuration
 
@@ -176,7 +208,23 @@ Leave Client identifier blank and the other reservation options at their documen
 ## 5. Configure Ubuntu
 
 1. Start `VM_Ubuntu` with its only enabled adapter on `PFSense Network`.
-2. Verify the OS and required tools. The documented host runs Apache on TCP 80 and SSH on TCP 22; the lab also uses tools such as `curl`, `wget`, `nmap`, `tcpdump`, `dnsutils`, and `netcat-openbsd`.
+2. Verify the OS and required tools installed during [Initial VM Preparation](#initial-vm-preparation):
+
+   ```bash
+   cat /etc/os-release
+   for tool in curl wget nmap tcpdump dig nc ssh; do
+       command -v "$tool" >/dev/null 2>&1 && echo "[OK] $tool" || echo "[MISSING] $tool"
+   done
+   ```
+
+   Enable and start the documented Apache (TCP 80) and SSH (TCP 22) services, then confirm both are active:
+
+   ```bash
+   sudo systemctl enable --now apache2 ssh
+   systemctl is-active apache2 ssh
+   ```
+
+   Expected: both services report `active`. If packages are missing, complete the Ubuntu installation commands in Section 1 before proceeding. The VM should now be connected only to **Internal Network → `PFSense Network`**.
 3. Configure DHCP and a **persistent route** to the external test subnet in the appropriate Netplan YAML file:
 
 ```yaml
@@ -228,10 +276,12 @@ Expected: `172.16.77.10/24`, a route to `192.168.50.0/24` via `172.16.77.1`, and
 
    ```bash
    cat /etc/os-release
-   command -v nmap tcpdump curl wget nc ssh
+   for tool in nmap tcpdump curl wget nc ssh; do
+       command -v "$tool" >/dev/null 2>&1 && echo "[OK] $tool" || echo "[MISSING] $tool"
+   done
    ```
 
-   All six tools should return executable paths. If any are missing, revisit the package installation instructions in [Section 1 — Prerequisites](#1-prerequisites).
+   All six tools should report `[OK]`. If any are missing, revisit the package installation instructions in [Section 1 — Prerequisites](#1-prerequisites).
 3. Configure DHCP and a persistent route using `/etc/network/interfaces` (the documented Debian host uses **ifupdown**):
 
 ```ini
