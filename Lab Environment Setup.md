@@ -165,16 +165,18 @@ The following screenshot documents the **temporary NAT internet-connectivity tes
 4. Set **Gateway: None**.
 5. Uncheck **Block private networks** and **Block bogon networks** for this intentionally private, isolated test WAN.
 6. Save and apply.
+
+
+![OPNsense final WAN settings — part 1](images/lab-setup/opnsense-wan-static-configuration(1).png)
+![OPNsense final WAN settings — part 2](images/lab-setup/opnsense-wan-static-configuration(2).png)
+
 7. Power off `VM_OPNsense` and set VirtualBox **Adapter 1** to **Internal Network → `Lab-External`**. Leave Adapter 2 connected to `PFSense Network`.
 8. Start OPNsense and confirm both interface addresses on the console.
 
-![OPNsense final WAN settings — part 1](images/lab-setup/opnsense-wan-static-configuration(1).png)
-
-![OPNsense final WAN settings — part 2](images/lab-setup/opnsense-wan-static-configuration(2).png)
-
-![OPNsense console interface overview](images/lab-setup/opnsense-console-interface-overview.png)
 
 Expected console addresses: **WAN `192.168.50.1/24`**, **LAN `172.16.77.1/24`**.
+
+![OPNsense console interface overview](images/lab-setup/opnsense-console-interface-overview.png)
 
 ## 4. Configure LAN DHCP and reservations
 
@@ -225,6 +227,12 @@ Leave Client identifier blank and the other reservation options at their documen
    ```
 
    Expected: both services report `active`. If packages are missing, complete the Ubuntu installation commands in Section 1 before proceeding. The VM should now be connected only to **Internal Network → `PFSense Network`**.
+
+
+![Ubuntu OS and tools](images/lab-setup/ubuntu-os-and-tools-verification.png)
+![Ubuntu service verification](images/lab-setup/ubuntu-service-verification.png)
+![Ubuntu Apache HTTP verification](images/lab-setup/ubuntu-apache-http-verification.png)
+
 3. Configure DHCP and a **persistent route** to the external test subnet in the appropriate Netplan YAML file:
 
 ```yaml
@@ -247,6 +255,8 @@ sudo netplan try
 sudo netplan apply
 ```
 
+![Ubuntu persistent route](images/lab-setup/ubuntu-persistent-route-configuration.png)
+
 4. Verify the DHCP reservation, route, and LAN reachability:
 
 ```bash
@@ -257,16 +267,8 @@ ping -c 4 172.16.77.1
 
 Expected: `172.16.77.10/24`, a route to `192.168.50.0/24` via `172.16.77.1`, and successful replies from OPNsense LAN.
 
-![Ubuntu OS and tools](images/lab-setup/ubuntu-os-and-tools-verification.png)
-
-![Ubuntu service verification](images/lab-setup/ubuntu-service-verification.png)
-
-![Ubuntu Apache HTTP verification](images/lab-setup/ubuntu-apache-http-verification.png)
-
-![Ubuntu persistent route](images/lab-setup/ubuntu-persistent-route-configuration.png)
 
 ![Ubuntu IP and routing](images/lab-setup/ubuntu-ip-and-routing-configuration.png)
-
 ![Ubuntu OPNsense LAN connectivity](images/lab-setup/ubuntu-opnsense-connectivity-verification.png)
 
 ## 6. Configure Debian
@@ -282,6 +284,8 @@ Expected: `172.16.77.10/24`, a route to `192.168.50.0/24` via `172.16.77.1`, and
    ```
 
    All six tools should report `[OK]`. If any are missing, revisit the package installation instructions in [Section 1 — Prerequisites](#1-prerequisites).
+
+![Debian OS and tools](images/lab-setup/debian-os-and-tool-verification.png)
 3. Configure DHCP and a persistent route using `/etc/network/interfaces` (the documented Debian host uses **ifupdown**):
 
 ```ini
@@ -293,6 +297,8 @@ iface enp0s3 inet dhcp
 
 Edit the existing interface stanza rather than duplicating it. Apply the changes using an interface restart or a VM reboot.
 
+![Debian persistent route](images/lab-setup/debian-persistent-route-configuration.png)
+
 4. Verify:
 
 ```bash
@@ -303,12 +309,8 @@ ping -c 4 172.16.77.1
 
 Expected: `172.16.77.11/24`, a route to `192.168.50.0/24` via `172.16.77.1`, and successful replies from OPNsense LAN.
 
-![Debian OS and tools](images/lab-setup/debian-os-and-tool-verification.png)
-
-![Debian persistent route](images/lab-setup/debian-persistent-route-configuration.png)
 
 ![Debian IP and routing](images/lab-setup/debian-ip-and-routing-configuration.png)
-
 ![Debian OPNsense LAN connectivity](images/lab-setup/debian-opnsense-connectivity-verification.png)
 
 ## 7. Configure Kali's persistent external address
@@ -319,6 +321,8 @@ Expected: `172.16.77.11/24`, a route to `192.168.50.0/24` via `172.16.77.1`, and
 ip -br addr
 nmcli -f NAME,DEVICE connection show --active
 ```
+
+![Kali OS and tools](images/lab-setup/kali-os-and-tool-verification.png)
 
 2. The documented profile is named **`Wired connection 1`** and uses interface `eth0`. Configure a static address and persistent route:
 
@@ -334,6 +338,8 @@ sudo nmcli connection modify "Wired connection 1" \
 
 `ipv4.never-default yes` prevents Kali from treating this isolated interface as an internet gateway. The `ipv4.routes` setting tells Kali to send traffic for the protected subnet through OPNsense WAN.
 
+![Kali persistent network configuration](images/lab-setup/kali-persistent-network-configuration.png)
+
 3. Reactivate the connection and verify:
 
 ```bash
@@ -346,11 +352,8 @@ Expected: `192.168.50.10/24` on `eth0`, **no default route**, and `172.16.77.0/2
 
 4. Reboot Kali and repeat the checks to confirm persistence.
 
-![Kali OS and tools](images/lab-setup/kali-os-and-tool-verification.png)
-
-![Kali persistent network configuration](images/lab-setup/kali-persistent-network-configuration.png)
-
 ![Kali IP, routing, and connectivity](images/lab-setup/kali-ip-routing-and-connectivity-verification.png)
+
 
 > **Troubleshooting — `Network is unreachable`:** Verify the route to `172.16.77.0/24` exists before treating a failed ping as a firewall block.
 
