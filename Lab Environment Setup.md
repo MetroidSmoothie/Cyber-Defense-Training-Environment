@@ -213,7 +213,7 @@ Leave Client identifier blank and the other reservation options at their documen
    ```bash
    cat /etc/os-release
    for tool in curl wget nmap tcpdump dig nc ssh; do
-       command -v "$tool" >/dev/null 2>&1 && echo "[OK] $tool" || echo "[MISSING] $tool"
+       command -v "$tool" || echo "[MISSING] $tool"
    done
    ```
 
