@@ -287,14 +287,14 @@ Finally, shut down Kali and **disable Adapter 2** so it remains an external-only
 
 ## Completion Checklist
 
-- [x] Ubuntu services and IP address verified
-- [x] Baseline Kali-to-Ubuntu HTTP and ICMP denied
-- [x] Default-deny WAN log entries observed
-- [x] Narrow Kali-to-Ubuntu TCP 80 rule configured and tested
-- [x] SSH and ICMP remained blocked after HTTP was allowed
-- [x] HTTP connection states observed
-- [x] WAN HTTP permit log captured after applying logging change
-- [x] Temporary HTTP rule removed and original connectivity verified
+- [ ] Ubuntu services and IP address verified
+- [ ] Baseline Kali-to-Ubuntu HTTP and ICMP denied
+- [ ] Default-deny WAN log entries observed
+- [ ] Narrow Kali-to-Ubuntu TCP 80 rule configured and tested
+- [ ] SSH and ICMP remained blocked after HTTP was allowed
+- [ ] HTTP connection states observed
+- [ ] WAN HTTP permit log captured after applying logging change
+- [ ] Temporary HTTP rule removed and original connectivity verified
 - [ ] Final Kali management adapter disabled (confirm after final screenshot)
 
 **End state:** The original WAN ICMP exception remains in place; Kali-to-Ubuntu HTTP and ICMP are blocked, and no temporary HTTP allow rule remains.
