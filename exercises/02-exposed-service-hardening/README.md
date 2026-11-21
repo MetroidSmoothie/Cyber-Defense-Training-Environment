@@ -70,9 +70,9 @@ Capture evidence of the baseline, configuration change, and restoration. The wal
 1. What is the difference between an `open`, `closed`, and `filtered` TCP port?
 2. What is the difference between a service listening on `0.0.0.0` and one listening on a specific IPv4 address?
 3. How does a loopback address differ from a network-facing interface address?
-4. How can a network service accept connections even when its associated service process is not continuously running?
-5. How does restricting a service's listening address differ from blocking connections with a firewall?
-6. **Match each service to its default port:** SSH, HTTP, HTTPS, DNS, and SMTP — **22, 25, 53, 80, 443**. Which of these services commonly uses both TCP and UDP?
+4. What is an attack surface, and how can unnecessary network services increase it?
+5. What is the principle of least privilege, and how can it apply to network service exposure?
+6. Why is it beneficial to use multiple layers of security controls rather than relying on a firewall alone?
 
 ## Walkthrough
 
