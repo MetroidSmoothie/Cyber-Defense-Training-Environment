@@ -33,22 +33,20 @@ The logical segment names in the diagram are **Lab-External** and **Lab-Internal
 - Confirmed OPNsense's default WAN deny rule blocks Kali-to-Ubuntu ICMP and records the denied traffic in firewall logs.
 - Verified protected hosts can reach OPNsense LAN.
 
-## Security Exercises
+## Exercises
 
-The following exercises are **planned** and will be linked as their documentation is published. Each placeholder points to an intended file within this repository; those pages do not exist yet.
-
-| # | Exercise | Documentation |
-| --- | --- | --- |
-| 01 | Stateful Firewall & Segmentation | [Exercise 01](https://github.com/MetroidSmoothie/Network-Security-Project/tree/main/exercises/01-stateful-firewall-segmentation) |
-| 02 | Exposed Service Hardening | `docs/02-exposed-service-hardening.md` — *Coming soon* |
-| 03 | Packet Capture & Protocol Analysis | `docs/03-packet-analysis.md` — *Coming soon* |
-| 04 | Network Reconnaissance & Firewall Testing | `docs/04-network-reconnaissance.md` — *Coming soon* |
-| 05 | Host-Based Firewall Defense | `docs/05-host-firewalls.md` — *Coming soon* |
-| 06 | SSH Brute-Force Detection & Response | `docs/06-ssh-detection.md` — *Coming soon* |
-| 07 | Suricata IDS & Detection Engineering | `docs/07-suricata-ids.md` — *Coming soon* |
-| 08 | Centralized Syslog & Event Correlation | `docs/08-centralized-syslog.md` — *Coming soon* |
-| 09 | OpenVPN & Least-Privilege Access | `docs/09-openvpn.md` — *Coming soon* |
-| 10 | Simulated Security Incident Investigation | `docs/10-incident-investigation.md` — *Coming soon* |
+| Exercise |
+|---|
+| [01 — Stateful Firewall & Network Segmentation](exercises/01-stateful-firewall-segmentation/README.md) |
+| [02 — Exposed Service Hardening](exercises/02-exposed-service-hardening/README.md) |
+| 03 — Packet Capture & Protocol Analysis |
+| 04 — Network Reconnaissance & Firewall Testing |
+| 05 — Host-Based Firewall Defense |
+| 06 — SSH Brute-Force Detection & Response |
+| 07 — Suricata IDS & Detection Engineering |
+| 08 — Centralized Syslog & Event Correlation |
+| 09 — OpenVPN & Least-Privilege Access |
+| 10 — Simulated Security Incident Investigation |
 
 ## Getting Started
 
