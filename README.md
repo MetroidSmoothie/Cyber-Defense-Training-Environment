@@ -39,7 +39,7 @@ The following exercises are **planned** and will be linked as their documentatio
 
 | # | Exercise | Documentation |
 | --- | --- | --- |
-| 01 | Stateful Firewall & Segmentation | `docs/01-stateful-firewall-segmentation.md` — *Coming soon* |
+| 01 | Stateful Firewall & Segmentation | [Exercise 01](https://github.com/MetroidSmoothie/Network-Security-Project/tree/main/exercises/01-stateful-firewall-segmentation) |
 | 02 | Exposed Service Hardening | `docs/02-exposed-service-hardening.md` — *Coming soon* |
 | 03 | Packet Capture & Protocol Analysis | `docs/03-packet-analysis.md` — *Coming soon* |
 | 04 | Network Reconnaissance & Firewall Testing | `docs/04-network-reconnaissance.md` — *Coming soon* |
