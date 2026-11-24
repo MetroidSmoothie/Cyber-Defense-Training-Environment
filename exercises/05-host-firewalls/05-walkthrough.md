@@ -16,7 +16,7 @@ nc -z -v -w 3 172.16.77.10 80
 
 The route uses `enp0s3` directly, without a gateway. Both TCP connections succeed, confirming that Debian can access Ubuntu's services without traversing OPNsense.
 
-![Debian baseline connectivity](../../images/05-host-based-firewall-defense/debian-host-firewall-baseline.png)
+![Debian baseline connectivity](../../images/05-host-firewalls/debian-host-firewall-baseline.png)
 
 ## Task 2 — Inspect the Host Firewall
 
@@ -33,7 +33,7 @@ sudo ufw show added
 
 The baseline shows `Status: inactive` and no added rules. If your system has existing rules, preserve its configuration before proceeding.
 
-![Initial UFW status](../../images/05-host-based-firewall-defense/ubuntu-ufw-initial-status.png)
+![Initial UFW status](../../images/05-host-firewalls/ubuntu-ufw-initial-status.png)
 
 ## Task 3 — Implement Host-Based Firewall Protection
 
@@ -72,7 +72,7 @@ If prompted about disrupting SSH connections, confirm using the local VM console
 
 Verify that UFW is active, incoming traffic is denied by default, outgoing traffic is allowed, logging is on, and the only explicitly added rule permits TCP 80 from Debian.
 
-![Active UFW policy and HTTP exception](../../images/05-host-based-firewall-defense/ubuntu-ufw-policy-configuration.png)
+![Active UFW policy and HTTP exception](../../images/05-host-firewalls/ubuntu-ufw-policy-configuration.png)
 
 ## Task 4 — Validate Internal Access Restrictions
 
@@ -86,7 +86,7 @@ wget --spider -S -T 5 -t 1 http://172.16.77.10
 
 The SSH connection times out, the HTTP connection succeeds, and Apache returns `HTTP/1.1 200 OK`.
 
-![SSH blocked and HTTP permitted](../../images/05-host-based-firewall-defense/debian-host-firewall-validation.png)
+![SSH blocked and HTTP permitted](../../images/05-host-firewalls/debian-host-firewall-validation.png)
 
 ## Task 5 — Verify Host Firewall Enforcement
 
@@ -128,7 +128,7 @@ Identify the following fields in a matching log entry:
 
 `DPT` identifies the destination port; `SPT` identifies the source port. The block entry confirms that Ubuntu's host firewall denied the incoming SSH connection attempt.
 
-![UFW blocked SSH connection logs](../../images/05-host-based-firewall-defense/ubuntu-ufw-blocked-ssh-log.png)
+![UFW blocked SSH connection logs](../../images/05-host-firewalls/ubuntu-ufw-blocked-ssh-log.png)
 
 ## Task 6 — Validate Defense in Depth
 
@@ -158,7 +158,7 @@ Compare the results with the internal scan from Exercise 4 and the connectivity 
 
 A filtered port does not reveal whether a service is listening. TCP 443 changes from closed to filtered because the firewall blocks the probes before the scanner receives a definitive response.
 
-![Internal port scan with UFW enabled](../../images/05-host-based-firewall-defense/debian-host-firewall-port-comparison.png)
+![Internal port scan with UFW enabled](../../images/05-host-firewalls/debian-host-firewall-port-comparison.png)
 
 ## Task 7 — Restore the Baseline
 
@@ -192,7 +192,7 @@ nc -z -v -w 3 172.16.77.10 80
 
 Both connections should succeed, matching the Task 1 baseline.
 
-![Restored Debian connectivity](../../images/05-host-based-firewall-defense/debian-host-firewall-baseline-restored.png)
+![Restored Debian connectivity](../../images/05-host-firewalls/debian-host-firewall-baseline-restored.png)
 
 ## Final Validation
 
