@@ -7,7 +7,7 @@
 
 ## Overview
 
-10 hands-on cybersecurity labs designed to provide aspiring and entry-level professionals with an accessible, reproducible environment for developing practical security skills. Built in VirtualBox using OPNsense, Kali Linux, Ubuntu, and Debian. The project features structured exercises covering network security engineering, traffic analysis, threat detection, system hardening, and incident investigation.
+10 hands-on cybersecurity labs designed to provide aspiring and entry-level professionals with an accessible, reproducible environment for developing practical security skills. Built in VirtualBox using OPNsense, Kali Linux, Ubuntu, and Debian. The project features structured exercises covering network security, traffic analysis, threat detection, system hardening, and incident investigation.
 
 ## Opening Notes
 
