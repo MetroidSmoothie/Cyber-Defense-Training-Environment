@@ -39,14 +39,14 @@ The logical segment names in the diagram are **Lab-External** and **Lab-Internal
 |---|
 | [01 — Stateful Firewall & Network Segmentation](exercises/01-stateful-firewall-segmentation/README.md) |
 | [02 — Exposed Service Hardening](exercises/02-exposed-service-hardening/README.md) |
-| 03 — Packet Capture & Protocol Analysis |
-| 04 — Network Reconnaissance & Firewall Testing |
-| 05 — Host-Based Firewall Defense |
-| 06 — SSH Brute-Force Detection & Response |
-| 07 — Suricata IDS & Detection Engineering |
-| 08 — Centralized Syslog & Event Correlation |
-| 09 — OpenVPN & Least-Privilege Access |
-| 10 — Simulated Security Incident Investigation |
+| [03 — Packet Capture & Protocol Analysis](exercises/03-packet-capture-protocol-analysis/README.md) |
+| [04 — Network Reconnaissance & Firewall Testing](exercises/04-network-reconnaissance-firewall-testing/README.md) |
+| [05 — Host-Based Firewall Defense](exercises/05-host-based-firewall-defense/README.md) |
+| [06 — SSH Brute-Force Detection & Response](exercises/06-ssh-detection/README.md) |
+| [07 — Suricata IDS & Detection Engineering](exercises/07-suricata-ids/README.md) |
+| [08 — Centralized Syslog & Event Correlation](exercises/08-centralized-syslog/README.md) |
+| [09 — OpenVPN & Least-Privilege Access](exercises/09-openvpn/README.md) |
+| [10 — Simulated Security Incident Investigation](exercises/10-incident-investigation/README.md) |
 
 ## Getting Started
 
