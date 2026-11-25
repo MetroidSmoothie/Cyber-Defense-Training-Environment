@@ -1,5 +1,5 @@
 
-# Network Security Project
+# Cyber Defense Training Environment
 
 **Project Status:** Core environment configured. Exercise enhancements in progress.
 
